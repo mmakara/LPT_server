@@ -1,6 +1,10 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
+        our_db_provider:
+            entity:
+                class: App\Entity\User
+                property: username
         in_memory: { memory: ~ }
     firewalls:
         dev:
@@ -8,6 +12,7 @@ security:
             security: false
         main:
             anonymous: true
+            provider: our_db_provider
 
             # activate different ways to authenticate
 
@@ -22,3 +27,5 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+    encoders:
+        App\Entity\User: plaintext

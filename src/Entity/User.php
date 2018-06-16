@@ -3,13 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
-class User implements UserInterface, \Serializable
+class User implements \Symfony\Component\Security\Core\User\UserInterface, \Serializable
 {
     /**
      * @ORM\Id()
@@ -29,6 +28,22 @@ class User implements UserInterface, \Serializable
 
     private $plainPassword;
 
+    /**
+     * @return mixed
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param mixed $plainPassword
+     */
+    public function setPlainPassword($plainPassword): void
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
     /** @see \Serializable::serialize() */
     public function serialize()
     {
@@ -47,7 +62,7 @@ class User implements UserInterface, \Serializable
     }
     public function getPassword()
     {
-        // TODO: Implement getPassword() method.
+        return $this->password;
     }
 
     public function getUsername()
@@ -169,7 +184,7 @@ class User implements UserInterface, \Serializable
         return $this->first_name;
     }
 
-    public function setFirstName(string $first_name): self
+    public function setFirstName(string $first_name = null): self
     {
         $this->first_name = $first_name;
 
@@ -188,7 +203,7 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(string $password = null): self
     {
         $this->password = $password;
 
@@ -200,10 +215,15 @@ class User implements UserInterface, \Serializable
         return $this->account_type;
     }
 
-    public function setAccountType(string $account_type): self
+    public function setAccountType(string $account_type = null): self
     {
         $this->account_type = $account_type;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->username;
     }
 }

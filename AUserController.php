@@ -3,14 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\User1Type;
+use App\Form\UserType;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/user")
@@ -25,74 +24,100 @@ class UserController extends Controller
         return $this->render('user/index.html.twig', ['users' => $userRepository->findAll()]);
     }
 
+
+    public function search(Request $request)
+    {
+        $data  = json_decode($request->getContent(), true);
+        //lat lng :)
+        $distance = 30; //km
+        // 6371 earth circle in km/m ; )
+
+        return new JsonResponse(['in_search' => true]);
+
+
+        $sql = "
+                SELECT
+            first_name, lat, lng, id, (
+              6371 * acos (
+              cos ( radians($lat) )
+              * cos( radians( lat ) )
+              * cos( radians( lng ) - radians($lng) )
+              + sin ( radians($lat) )
+              * sin( radians( lat ) )
+            )
+                ) AS distance
+                FROM user
+                HAVING distance < $distance
+                ORDER BY distance
+                LIMIT 0 , 20;
+        ";
+
+        $em = $this->getDoctrine()->getManager();
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+
     /**
      * @Route("/new", name="user_new", methods="GET|POST")
      */
-    public function new(Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function new(Request $request): Response
     {
         $user = new User();
 
         $data  = json_decode($request->getContent(), true);
 
         $now = new \DateTime();
-
-
         $user->setUsername($data['username']);
         $user->setFirstName($data['first_name']);
         $user->setEmail($data['email']);
+        $user->setPassword($data['password']);
         $user->setAccountType($data['rodzaj_konta']);
         $user->setCreatedAt($now);
         $user->setUpdatedAt($now);
-
-        $encoded = $encoder->encodePassword($user, $data['password']);
-
-        $user->setPassword($encoded);
-//        return new JsonResponse(['userpw'=>$user->getPassword(), 'spacing'=>'sssssssssssssssssssssssssss sssssssssssssssssssssssssss', "$encoded" => $encoded]);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);
         $em->flush();
 
         return new JsonResponse($data);
-    }
-
-    public function login(Request $request, UserPasswordEncoderInterface $encoder): Response
-    {
-        $data  = json_decode($request->getContent(), true);
-
-        /** @var User $user */
-        $user = $this->getDoctrine()->getRepository('App\Entity\User')
-                ->findOneBy(['username'=>$data['username']]);
-
-        $encoded = $encoder->encodePassword($user, $user->getPassword());
-        $user->setPassword($encoded);
-        $encoded_login = $encoder->encodePassword($user, $data['password']);
-
-        $validPassword = $encoder->isPasswordValid($user, $encoded_login);
-
-        return new JsonResponse(['user' => $validPassword, 'login' => $encoded_login]);
-
-        if($user) {
-            $encoded_new = $encoder->encodePassword($user, $data['password']);
 
 
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+//        die("ok");
+        if ($form->isSubmitted() && $form->isValid()) {
+            return new JsonResponse(['username'=>'git3']);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            return $this->redirectToRoute('user_index');
+        } else {
+            return new JsonResponse($request->request->all());
         }
 
-        return new JsonResponse([ 'status'=> $validPassword, 'password' => $data['password'], 'encpassed' => $encoded_pass, 'orgpass' => $user->getPassword()]);
-    }
-
-    private function login_good_response()
-    {
-        return [
-            'status' => 'bad'
-        ];
+        return $this->render('user/new.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
      * @Route("/{id}", name="user_show", methods="GET")
      */
-    public function show(User $user): Response
+    public function show(User $user)
+//    : Response
     {
+
+        return new JsonResponse($user->toJson());
+//
+//        var_dump($user);
+//        die;
         return $this->render('user/show.html.twig', ['user' => $user]);
     }
 
@@ -101,7 +126,7 @@ class UserController extends Controller
      */
     public function edit(Request $request, User $user): Response
     {
-        $form = $this->createForm(User1Type::class, $user);
+        $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
