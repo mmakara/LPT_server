@@ -56,10 +56,14 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, \Seri
     public function toJson()
     {
         return [
+            'id' => $this->id,
             'username' => $this->username,
-            'first_name' => $this->first_name
+            'first_name' => $this->first_name,
+            'email' => $this->email,
+            'account_type' => $this->account_type
         ];
     }
+
     public function getPassword()
     {
         return $this->password;

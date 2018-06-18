@@ -70,7 +70,7 @@ class UserController extends Controller
 
         $validPassword = $encoder->isPasswordValid($user, $encoded_login);
 
-        return new JsonResponse(['user' => $validPassword, 'login' => $encoded_login]);
+        return new JsonResponse($user->toJson());
 
         if($user) {
             $encoded_new = $encoder->encodePassword($user, $data['password']);
