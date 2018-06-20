@@ -62,6 +62,7 @@ class JobController extends Controller
         $job->setTitle($data['title']);
         $job->setDescription($data['description']);
         $job->setUser($user);
+        $job->setCreatedAt(new \DateTime());
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($job);
@@ -76,6 +77,9 @@ class JobController extends Controller
      */
     public function show(Job $job): Response
     {
+        if(!$job->getCreatedAt()) {
+            $job->setCreatedAt(new \DateTime());
+        }
         return $this->render('job/show.html.twig', ['job' => $job]);
     }
 
@@ -84,6 +88,9 @@ class JobController extends Controller
      */
     public function edit(Request $request, Job $job): Response
     {
+        if(!$job->getCreatedAt()) {
+            $job->setCreatedAt(new \DateTime());
+        }
         $form = $this->createForm(Job1Type::class, $job);
         $form->handleRequest($request);
 

@@ -53,6 +53,11 @@ class Job
      */
     private $lng;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $created_at;
+
     public function __construct()
     {
         $this->applicants = new ArrayCollection();
@@ -144,6 +149,7 @@ class Job
             'title' => $this->title,
             'description' => $this->description,
             'user' => $this->user->toJson() ?? null,
+            'created_at' => $this->created_at->format("d/m h:m")
         ];
 
         if($this->technician) {
@@ -176,6 +182,18 @@ class Job
     public function setLng(float $lng): self
     {
         $this->lng = $lng;
+
+        return $this;
+    }
+
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt($created_at): self
+    {
+        $this->created_at = $created_at;
 
         return $this;
     }

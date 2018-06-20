@@ -17,16 +17,6 @@ class Message
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User", cascade={"persist", "remove"})
-     */
-    private $from_user;
-
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User", cascade={"persist", "remove"})
-     */
-    private $to_user;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $subject;
@@ -36,33 +26,30 @@ class Message
      */
     private $body;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $created_at;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $is_archived;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     */
+    private $from_user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     */
+    private $to_user;
+
+
     public function getId()
     {
         return $this->id;
-    }
-
-    public function getFromUser(): ?User
-    {
-        return $this->from_user;
-    }
-
-    public function setFromUser(?User $from_user): self
-    {
-        $this->from_user = $from_user;
-
-        return $this;
-    }
-
-    public function getToUser(): ?User
-    {
-        return $this->to_user;
-    }
-
-    public function setToUser(?User $to_user): self
-    {
-        $this->to_user = $to_user;
-
-        return $this;
     }
 
     public function getSubject(): ?string
@@ -98,4 +85,53 @@ class Message
             'body' => $this->body
         ];
     }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $created_at): self
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getIsArchived(): ?bool
+    {
+        return $this->is_archived;
+    }
+
+    public function setIsArchived(?bool $is_archived): self
+    {
+        $this->is_archived = $is_archived;
+
+        return $this;
+    }
+
+    public function getFromUser(): ?User
+    {
+        return $this->from_user;
+    }
+
+    public function setFromUser(?User $from_user): self
+    {
+        $this->from_user = $from_user;
+
+        return $this;
+    }
+
+    public function getToUser(): ?User
+    {
+        return $this->to_user;
+    }
+
+    public function setToUser(?User $to_user): self
+    {
+        $this->to_user = $to_user;
+
+        return $this;
+    }
+
 }
