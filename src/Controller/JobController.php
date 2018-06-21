@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Job;
+use App\Fabryka\FabrykaZlecen;
 use App\Form\Job1Type;
 use App\Repository\JobRepository;
 use App\Repository\UserRepository;
@@ -58,11 +59,7 @@ class JobController extends Controller
         $now = new \DateTime();
 
         $user = $userRepository->find($data['user_id']);
-        $job = new Job();
-        $job->setTitle($data['title']);
-        $job->setDescription($data['description']);
-        $job->setUser($user);
-        $job->setCreatedAt(new \DateTime());
+        $job = FabrykaZlecen::dlaApi($request, $user);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($job);
@@ -150,7 +147,6 @@ class JobController extends Controller
      */
     public function get_for_technician(JobRepository $jobRepository, $user_id)
     {
-//        $user_jobs = $jobRepository->findBy(['user' => $user_id]);
         $repository = $this->getDoctrine()->getRepository('App\Entity\Job');
 
         $query = $repository->createQueryBuilder('a')
@@ -169,4 +165,14 @@ class JobController extends Controller
 
         return new JsonResponse($jobs_to_send);
     }
+
+
+    public function find_nearby(Request $request, JobRepository $jobRepository)
+    {
+        $jobs = $jobRepository->znajdz_w_poblizu($request);
+
+        return new JsonResponse($jobs_to_send);
+    }
+
+
 }

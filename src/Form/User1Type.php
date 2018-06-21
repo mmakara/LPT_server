@@ -19,6 +19,8 @@ class User1Type extends AbstractType
             ->add('email')
             ->add('password')
             ->add('account_type')
+            ->add('lat')
+            ->add('lng')
         ;
     }
 

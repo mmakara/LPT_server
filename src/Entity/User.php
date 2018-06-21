@@ -60,7 +60,9 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, \Seri
             'username' => $this->username,
             'first_name' => $this->first_name,
             'email' => $this->email,
-            'account_type' => $this->account_type
+            'account_type' => $this->account_type,
+            'lat' => $this->lat,
+            'lng' => $this->lng
         ];
     }
 
@@ -178,6 +180,16 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, \Seri
      */
     private $account_type;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $lat;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $lng;
+
     public function getId()
     {
         return $this->id;
@@ -229,5 +241,29 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, \Seri
     public function __toString()
     {
         return $this->username;
+    }
+
+    public function getLat(): ?float
+    {
+        return $this->lat;
+    }
+
+    public function setLat(?float $lat): self
+    {
+        $this->lat = $lat;
+
+        return $this;
+    }
+
+    public function getLng(): ?float
+    {
+        return $this->lng;
+    }
+
+    public function setLng(?float $lng): self
+    {
+        $this->lng = $lng;
+
+        return $this;
     }
 }

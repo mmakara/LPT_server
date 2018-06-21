@@ -2,7 +2,11 @@
 #    path: /
 #    controller: App\Controller\DefaultController::index
 
+jobs_nearby:
+    path: /job/api/nearby
+    controller: App\Controller\JobController:find_nearby
+
 login:
-    path: /login
+    path: /locbcvg
     controller: App\Controller\UserController:login
 

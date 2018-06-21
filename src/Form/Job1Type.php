@@ -15,6 +15,8 @@ class Job1Type extends AbstractType
             ->add('title')
             ->add('description')
             ->add('user')
+            ->add('lat')
+            ->add('lng')
             ->add('technician')
             ->add('applicants')
             ->add('created_at')
