@@ -14,10 +14,12 @@ class JobType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
+            ->add('lat')
+            ->add('lng')
+            ->add('created_at')
             ->add('user')
             ->add('technician')
             ->add('applicants')
-            ->add('created_at')
         ;
     }
 

@@ -7,6 +7,6 @@ jobs_nearby:
     controller: App\Controller\JobController:find_nearby
 
 login:
-    path: /locbcvg
+    path: /logowanie
     controller: App\Controller\UserController:login
 

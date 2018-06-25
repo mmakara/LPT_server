@@ -16,6 +16,8 @@
                 <th>Email</th>
                 <th>Password</th>
                 <th>Account_type</th>
+                <th>Lat</th>
+                <th>Lng</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -30,6 +32,8 @@
                 <td>{{ user.email }}</td>
                 <td>{{ user.password }}</td>
                 <td>{{ user.accountType }}</td>
+                <td>{{ user.lat }}</td>
+                <td>{{ user.lng }}</td>
                 <td>
                     <a href="{{ path('user_show', {'id': user.id}) }}">show</a>
                     <a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
@@ -37,7 +41,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="9">no records found</td>
+                <td colspan="11">no records found</td>
             </tr>
         {% endfor %}
         </tbody>

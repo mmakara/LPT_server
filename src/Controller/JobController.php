@@ -171,7 +171,7 @@ class JobController extends Controller
     {
         $jobs = $jobRepository->znajdz_w_poblizu($request);
 
-        return new JsonResponse($jobs_to_send);
+        return new JsonResponse($jobs);
     }
 
 

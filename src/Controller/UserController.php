@@ -40,6 +40,8 @@ class UserController extends Controller
         $user->setUsername($data['username']);
         $user->setFirstName($data['first_name']);
         $user->setEmail($data['email']);
+        $user->setLat($data['lat']);
+        $user->setLng($data['lng']);
         $user->setAccountType($data['rodzaj_konta']);
         $user->setCreatedAt($now);
         $user->setUpdatedAt($now);
@@ -56,7 +58,7 @@ class UserController extends Controller
         return new JsonResponse($data);
     }
 
-    public function login(Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function login(Request $request): Response
     {
         $data  = json_decode($request->getContent(), true);
 
@@ -64,11 +66,11 @@ class UserController extends Controller
         $user = $this->getDoctrine()->getRepository('App\Entity\User')
                 ->findOneBy(['username'=>$data['username']]);
 
-        $encoded = $encoder->encodePassword($user, $user->getPassword());
-        $user->setPassword($encoded);
-        $encoded_login = $encoder->encodePassword($user, $data['password']);
+//        $encoded = $encoder->encodePassword($user, $user->getPassword());
+        $user->setPassword($data['password']);
+//        $encoded_login = $encoder->encodePassword($user, $data['password']);
 
-        $validPassword = $encoder->isPasswordValid($user, $encoded_login);
+//        $validPassword = $encoder->isPasswordValid($user, $encoded_login);
 
         return new JsonResponse($user->toJson());
 
